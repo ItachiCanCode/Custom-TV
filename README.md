@@ -18,13 +18,20 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 
 ## Install
 1. Open the **Actions** tab, pick the latest **Build APK** run, and download the `TvLauncher-debug-apk` artifact.
-   Tagged releases (`v*`) also publish the APK on the **Releases** page.
+   Tagged releases (`v*`) publish the launcher APK and the setup apps on the **Releases** page.
 2. Unzip if needed, then sideload `app-debug.apk` onto your TV, for example:
    ```
    adb connect <tv-ip-address>
    adb install app-debug.apk
    ```
 3. Press **Home** and choose **My Launcher** as the default home app.
+
+## Easy setup apps (no command line)
+Each release includes two helpers that install the launcher on your TV for you:
+- **`TvSetup-android.apk`**: install on your Android phone, enter the TV's IP address, tap **Install launcher on TV**.
+- **`TvLauncherSetup.exe`**: Windows app. Enter the TV's IP address, click **Install launcher on TV** (it fetches `adb` automatically). You can also pick a local APK.
+
+Before using either: on the TV open Settings > Device Preferences > About, click **Build** 7 times, then in Developer options enable **Network/USB debugging**. Keep the phone or PC on the same Wi-Fi as the TV and accept the debugging prompt shown on the TV. TVs that only offer "Wireless debugging" with a pairing code are not supported yet.
 
 ## Controls
 | Action | Remote |
