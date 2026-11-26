@@ -2,13 +2,13 @@
 
 ![Build APK](https://github.com/ItachiCanCode/Custom-TV/actions/workflows/build.yml/badge.svg)
 
-A custom **Android TV home launcher** with a frosted-glass look, animated background, clock and date, a Favorites row, and a quick Settings button. Fully D-pad (remote) driven, with no third-party dependencies.
+A custom **Android TV home launcher** with a frosted-glass look, animated background, clock and date, a Favorites row, and quick Wi-Fi and Settings buttons. Fully D-pad (remote) driven, with no third-party dependencies.
 
 ## Features
 - Lists all installed Leanback and regular launcher apps, sorted A-Z
 - **Favorites** row: long-press any app to pin or unpin it
 - Focus animations (scale, glass highlight, label reveal) with smooth centered scrolling
-- Clock, date, and a **Settings** shortcut in the header
+- Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
 - On-screen crash report on the next launch, for debugging on real TV hardware
 - Back never closes the home screen
 

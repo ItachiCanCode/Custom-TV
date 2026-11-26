@@ -134,6 +134,22 @@ class MainActivity : Activity() {
 
     private fun favs(): Set<String> = prefs.getStringSet("favs", emptySet()) ?: emptySet()
 
+    /** Focusable glass pill in the header that opens a system settings screen. */
+    private fun headerButton(label: String, action: String): View {
+        val glass = GlassDrawable(24 * dp, 1.5f * dp, true)
+        return TextView(this).apply {
+            text = label; textSize = 18f; setTextColor(Color.WHITE)
+            background = glass
+            isFocusable = true; isClickable = true
+            setPadding((22 * dp).toInt(), (8 * dp).toInt(), (22 * dp).toInt(), (8 * dp).toInt())
+            setOnFocusChangeListener { _, f -> glass.intensity = if (f) 1f else 0f }
+            setOnClickListener {
+                try { startActivity(Intent(action)) } catch (_: Throwable) {}
+            }
+            layoutParams = LinearLayout.LayoutParams(-2, -2).apply { marginEnd = (16 * dp).toInt() }
+        }
+    }
+
     private fun render() {
         content.removeAllViews()
         allTiles.clear()
@@ -144,17 +160,8 @@ class MainActivity : Activity() {
             text = "Home"; textSize = 30f; setTextColor(Color.WHITE)
             typeface = android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL)
         }, LinearLayout.LayoutParams(0, -2, 1f))
-        val settingsGlass = GlassDrawable(24 * dp, 1.5f * dp, true)
-        header.addView(TextView(this).apply {
-            text = "Settings"; textSize = 18f; setTextColor(Color.WHITE)
-            background = settingsGlass
-            isFocusable = true; isClickable = true
-            setPadding((22 * dp).toInt(), (8 * dp).toInt(), (22 * dp).toInt(), (8 * dp).toInt())
-            setOnFocusChangeListener { _, f -> settingsGlass.intensity = if (f) 1f else 0f }
-            setOnClickListener {
-                try { startActivity(Intent(android.provider.Settings.ACTION_SETTINGS)) } catch (_: Throwable) {}
-            }
-        }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = (16 * dp).toInt() })
+        header.addView(headerButton("Wi-Fi", android.provider.Settings.ACTION_WIFI_SETTINGS))
+        header.addView(headerButton("Settings", android.provider.Settings.ACTION_SETTINGS))
         header.addView(TextClock(this).apply {
             format12Hour = "EEE, MMM d"; format24Hour = "EEE, MMM d"
             textSize = 18f; setTextColor(Color.parseColor("#B3FFFFFF"))
