@@ -7,7 +7,7 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 ## Features
 - Shows all installed Leanback and regular launcher apps in a wrapping A-Z grid, with names always visible
 - **Favorites** row: long-press any app to pin or unpin it
-- Focus animations (scale, glass highlight, label reveal) with smooth centered scrolling
+- Focus animations (scale and glass highlight) with smooth scrolling
 - Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
 - On-screen crash report on the next launch, for debugging on real TV hardware
 - Back never closes the home screen
@@ -17,9 +17,9 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 - A way to sideload an APK (for example `adb` or a file-manager app)
 
 ## Install
-1. Open the **Actions** tab, pick the latest **Build APK** run, and download the `TvLauncher-debug-apk` artifact.
-   Tagged releases (`v*`) publish the launcher APK and the setup apps on the **Releases** page.
-2. Unzip if needed, then sideload `app-debug.apk` onto your TV, for example:
+1. Download `app-debug.apk` from the latest [Release](https://github.com/ItachiCanCode/Custom-TV/releases/latest).
+   (Or, for the newest unreleased build, download the `TvLauncher-debug-apk` artifact from the latest **Build APK** run in the Actions tab.)
+2. Sideload `app-debug.apk` onto your TV, for example:
    ```
    adb connect <tv-ip-address>
    adb install app-debug.apk
@@ -52,13 +52,15 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## Project structure
 ```
-app/src/main/
-  AndroidManifest.xml                          HOME + LEANBACK_LAUNCHER intent filter
-  java/com/example/tvlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
-  res/                                         theme and TV banner
+app/                    the TV launcher
+  src/main/AndroidManifest.xml                 HOME + LEANBACK_LAUNCHER intent filter
+  src/main/java/com/example/tvlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
+setup-android/          phone app that installs the launcher on a TV over ADB
+setup-windows/          Windows app that does the same (.NET WinForms)
 .github/workflows/
-  build.yml                                    builds the debug APK on every push and PR
-  release.yml                                  publishes the APK when a v* tag is pushed
+  build.yml             builds the launcher APK on every push and PR
+  build-setup.yml       builds the Android and Windows setup apps
+  release.yml           on a v* tag, publishes the launcher and both setup apps
 ```
 
 ## Troubleshooting
