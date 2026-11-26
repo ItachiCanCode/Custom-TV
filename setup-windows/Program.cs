@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Text;
 
-namespace TvLauncherSetup;
+namespace VoidLauncherSetup;
 
 static class Program
 {
@@ -15,14 +15,14 @@ static class Program
 }
 
 /// <summary>
-/// Windows companion: downloads adb + the latest TvLauncher APK and installs it
+/// Windows companion: downloads adb + the latest VoidLauncher APK and installs it
 /// on an Android TV over the network (ADB over TCP).
 /// </summary>
 class MainForm : Form
 {
-    const string ApkUrl = "https://github.com/ItachiCanCode/Custom-TV/releases/latest/download/app-debug.apk";
+    const string ApkUrl = "https://github.com/ItachiCanCode/Custom-TV/releases/latest/download/VoidLauncher.apk";
     const string AdbZipUrl = "https://dl.google.com/android/repository/platform-tools-latest-windows.zip";
-    const string LauncherActivity = "com.example.tvlauncher/.MainActivity";
+    const string LauncherActivity = "com.example.voidlauncher/.MainActivity";
 
     readonly TextBox ipBox = new() { PlaceholderText = "TV IP address, e.g. 192.168.1.50", Width = 260 };
     readonly TextBox apkBox = new() { PlaceholderText = "Optional: path to a local APK (leave empty to download latest)", Dock = DockStyle.Fill };
@@ -30,11 +30,11 @@ class MainForm : Form
     readonly Button installBtn = new() { Text = "Install launcher on TV", AutoSize = true };
     readonly TextBox logBox = new() { Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical, Dock = DockStyle.Fill };
     readonly string workDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TvLauncherSetup");
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VoidLauncherSetup");
 
     public MainForm()
     {
-        Text = "TV Launcher Setup";
+        Text = "Void Launcher Setup";
         Width = 720; Height = 520;
         StartPosition = FormStartPosition.CenterScreen;
 
@@ -97,7 +97,7 @@ class MainForm : Form
             Log("Installed. Opening the home chooser on the TV...");
             await Adb(adb, $"-s {target} shell cmd package set-home-activity {LauncherActivity}");
             await Adb(adb, $"-s {target} shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
-            Log("Done! On the TV choose \"My Launcher\" as the home app if asked.");
+            Log("Done! On the TV choose \"Void Launcher\" as the home app if asked.");
         }
         catch (Exception ex) { Log("Error: " + ex.Message); }
         finally { installBtn.Enabled = true; }

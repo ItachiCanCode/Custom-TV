@@ -19,8 +19,8 @@ jobs:
         working-directory: setup-android
       - uses: actions/upload-artifact@v4
         with:
-          name: TvSetup-android-apk
-          path: setup-android/app/build/outputs/apk/debug/app-debug.apk
+          name: VoidLauncherSetup-android-apk
+          path: setup-android/app/build/outputs/apk/debug/VoidLauncherSetup-debug.apk
   windows:
     runs-on: windows-latest
     steps:
@@ -28,8 +28,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - run: dotnet publish setup-windows/TvLauncherSetup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o out
+      - run: dotnet publish setup-windows/VoidLauncherSetup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o out
       - uses: actions/upload-artifact@v4
         with:
-          name: TvLauncherSetup-windows-exe
-          path: out/TvLauncherSetup.exe
+          name: VoidLauncherSetup-windows-exe
+          path: out/VoidLauncherSetup.exe

@@ -15,10 +15,10 @@
 
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <application
-        android:label="My Launcher"
+        android:label="Void Launcher"
         android:banner="@drawable/banner"
         android:icon="@android:drawable/sym_def_app_icon"
-        android:theme="@style/Theme.Launcher">
+        android:theme="@style/Theme.VoidLauncher">
 
         <activity
             android:name=".MainActivity"

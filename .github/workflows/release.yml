@@ -18,11 +18,12 @@ jobs:
         with:
           gradle-version: 8.7
       - run: gradle assembleDebug --no-daemon
-      # Name must stay app-debug.apk: the setup apps download releases/latest/download/app-debug.apk
+      # The asset name must stay VoidLauncher.apk: the setup apps download releases/latest/download/VoidLauncher.apk
+      - run: cp app/build/outputs/apk/debug/VoidLauncher-debug.apk VoidLauncher.apk
       - uses: actions/upload-artifact@v4
         with:
           name: rel-launcher
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: VoidLauncher.apk
 
   setup-android:
     runs-on: ubuntu-latest
@@ -37,11 +38,11 @@ jobs:
           gradle-version: 8.7
       - run: gradle assembleDebug --no-daemon
         working-directory: setup-android
-      - run: cp setup-android/app/build/outputs/apk/debug/app-debug.apk TvSetup-android.apk
+      - run: cp setup-android/app/build/outputs/apk/debug/VoidLauncherSetup-debug.apk VoidLauncherSetup-Android.apk
       - uses: actions/upload-artifact@v4
         with:
           name: rel-setup-android
-          path: TvSetup-android.apk
+          path: VoidLauncherSetup-Android.apk
 
   setup-windows:
     runs-on: windows-latest
@@ -50,11 +51,11 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - run: dotnet publish setup-windows/TvLauncherSetup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o out
+      - run: dotnet publish setup-windows/VoidLauncherSetup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o out
       - uses: actions/upload-artifact@v4
         with:
           name: rel-setup-windows
-          path: out/TvLauncherSetup.exe
+          path: out/VoidLauncherSetup.exe
 
   publish:
     needs: [launcher, setup-android, setup-windows]
@@ -71,14 +72,14 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/app-debug.apk
-            dist/TvSetup-android.apk
-            dist/TvLauncherSetup.exe
+            dist/VoidLauncher.apk
+            dist/VoidLauncherSetup-Android.apk
+            dist/VoidLauncherSetup.exe
           generate_release_notes: true
           body: |
             ## Downloads
-            - **app-debug.apk**: the TV launcher itself (install on your Android TV)
-            - **TvSetup-android.apk**: phone app that installs the launcher on your TV over Wi-Fi
-            - **TvLauncherSetup.exe**: Windows app that installs the launcher on your TV over the network
+            - **VoidLauncher.apk**: Void Launcher itself (install on your Android TV)
+            - **VoidLauncherSetup-Android.apk**: phone app that installs Void Launcher on your TV over Wi-Fi
+            - **VoidLauncherSetup.exe**: Windows app that installs Void Launcher on your TV over the network
 
             See the README for setup steps (enable Network/USB debugging on the TV first).

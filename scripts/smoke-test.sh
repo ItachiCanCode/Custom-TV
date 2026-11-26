@@ -5,8 +5,8 @@
 # Usage: scripts/smoke-test.sh <api-level>
 set -u
 API="${1:-x}"
-PKG=com.example.tvlauncher
-APK=app/build/outputs/apk/debug/app-debug.apk
+PKG=com.example.voidlauncher
+APK=app/build/outputs/apk/debug/VoidLauncher-debug.apk
 OUT=smoke-out
 mkdir -p "$OUT"
 
@@ -43,7 +43,7 @@ fi
 if ! adb shell "ps -A 2>/dev/null || ps" | grep -q "$PKG"; then
   annotate error "launcher process not running after start. am start said: $START_OUT
 logcat tail:
-$(grep -i "tvlauncher\|AndroidRuntime\|ActivityManager" "$OUT/api$API-logcat.txt" | tail -25)"
+$(grep -i "voidlauncher\|AndroidRuntime\|ActivityManager" "$OUT/api$API-logcat.txt" | tail -25)"
   exit 1
 fi
 annotate notice "PASS"

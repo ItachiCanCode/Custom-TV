@@ -1,4 +1,4 @@
-# Custom-TV (TvLauncher)
+# Void Launcher
 
 ![Build APK](https://github.com/ItachiCanCode/Custom-TV/actions/workflows/build.yml/badge.svg)
 
@@ -17,19 +17,19 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 - A way to sideload an APK (for example `adb` or a file-manager app)
 
 ## Install
-1. Download `app-debug.apk` from the latest [Release](https://github.com/ItachiCanCode/Custom-TV/releases/latest).
-   (Or, for the newest unreleased build, download the `TvLauncher-debug-apk` artifact from the latest **Build APK** run in the Actions tab.)
-2. Sideload `app-debug.apk` onto your TV, for example:
+1. Download `VoidLauncher.apk` from the latest [Release](https://github.com/ItachiCanCode/Custom-TV/releases/latest).
+   (Or, for the newest unreleased build, download the `VoidLauncher-debug-apk` artifact from the latest **Build APK** run in the Actions tab.)
+2. Sideload `VoidLauncher.apk` onto your TV, for example:
    ```
    adb connect <tv-ip-address>
-   adb install app-debug.apk
+   adb install VoidLauncher.apk
    ```
-3. Press **Home** and choose **My Launcher** as the default home app.
+3. Press **Home** and choose **Void Launcher** as the default home app.
 
 ## Easy setup apps (no command line)
 Each release includes two helpers that install the launcher on your TV for you:
-- **`TvSetup-android.apk`**: install on your Android phone, enter the TV's IP address, tap **Install launcher on TV**.
-- **`TvLauncherSetup.exe`**: Windows app. Enter the TV's IP address, click **Install launcher on TV** (it fetches `adb` automatically). You can also pick a local APK.
+- **`VoidLauncherSetup-Android.apk`**: install on your Android phone, enter the TV's IP address, tap **Install launcher on TV**.
+- **`VoidLauncherSetup.exe`**: Windows app. Enter the TV's IP address, click **Install launcher on TV** (it fetches `adb` automatically). You can also pick a local APK.
 
 Before using either: on the TV open Settings > Device Preferences > About, click **Build** 7 times, then in Developer options enable **Network/USB debugging**. Keep the phone or PC on the same Wi-Fi as the TV and accept the debugging prompt shown on the TV. TVs that only offer "Wireless debugging" with a pairing code are not supported yet.
 
@@ -48,13 +48,13 @@ Requires JDK 17, the Android SDK (platform 34), and Gradle 8.7. There is no Grad
 gradle assembleDebug
 ```
 
-Output: `app/build/outputs/apk/debug/app-debug.apk`
+Output: `app/build/outputs/apk/debug/VoidLauncher-debug.apk`
 
 ## Project structure
 ```
-app/                    the TV launcher
+app/                    Void Launcher (the TV app)
   src/main/AndroidManifest.xml                 HOME + LEANBACK_LAUNCHER intent filter
-  src/main/java/com/example/tvlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
+  src/main/java/com/example/voidlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
 setup-android/          phone app that installs the launcher on a TV over ADB
 setup-windows/          Windows app that does the same (.NET WinForms)
 .github/workflows/

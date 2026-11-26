@@ -5,7 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>TvLauncherSetup</AssemblyName>
-    <RootNamespace>TvLauncherSetup</RootNamespace>
+    <AssemblyName>VoidLauncherSetup</AssemblyName>
+    <RootNamespace>VoidLauncherSetup</RootNamespace>
   </PropertyGroup>
 </Project>

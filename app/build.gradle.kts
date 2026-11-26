@@ -2,11 +2,13 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+base { archivesName.set("VoidLauncher") }
+
 android {
-    namespace = "com.example.tvlauncher"
+    namespace = "com.example.voidlauncher"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.example.tvlauncher"
+        applicationId = "com.example.voidlauncher"
         minSdk = 21
         targetSdk = 34
         versionCode = 1

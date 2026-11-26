@@ -20,5 +20,5 @@ jobs:
       - run: gradle lintDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
-          name: TvLauncher-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: VoidLauncher-debug-apk
+          path: app/build/outputs/apk/debug/VoidLauncher-debug.apk

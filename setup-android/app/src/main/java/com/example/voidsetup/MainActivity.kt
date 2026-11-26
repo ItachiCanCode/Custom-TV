@@ -1,4 +1,4 @@
-package com.example.tvsetup
+package com.example.voidsetup
 
 import android.app.Activity
 import android.graphics.Color
@@ -17,14 +17,14 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * Phone companion: downloads the latest TvLauncher APK and installs it on an
+ * Phone companion: downloads the latest VoidLauncher APK and installs it on an
  * Android TV over the network (ADB over TCP, port 5555 by default).
  */
 class MainActivity : Activity() {
 
     companion object {
-        const val APK_URL = "https://github.com/ItachiCanCode/Custom-TV/releases/latest/download/app-debug.apk"
-        const val LAUNCHER_ACTIVITY = "com.example.tvlauncher/.MainActivity"
+        const val APK_URL = "https://github.com/ItachiCanCode/Custom-TV/releases/latest/download/VoidLauncher.apk"
+        const val LAUNCHER_ACTIVITY = "com.example.voidlauncher/.MainActivity"
     }
 
     private lateinit var ipField: EditText
@@ -43,7 +43,7 @@ class MainActivity : Activity() {
             setBackgroundColor(Color.parseColor("#101826"))
         }
         root.addView(TextView(this).apply {
-            text = "TV Launcher Setup"; textSize = 26f; setTextColor(Color.WHITE)
+            text = "Void Launcher Setup"; textSize = 26f; setTextColor(Color.WHITE)
         })
         root.addView(TextView(this).apply {
             text = "On the TV: Settings > Device Preferences > About > tap Build 7 times, then " +
@@ -101,7 +101,7 @@ class MainActivity : Activity() {
                     try { adb.shell("cmd package set-home-activity $LAUNCHER_ACTIVITY") } catch (_: Throwable) {}
                     adb.shell("am start -a android.intent.action.MAIN -c android.intent.category.HOME")
                 }
-                say("Done! On the TV choose \"My Launcher\" as the home app if asked.")
+                say("Done! On the TV choose \"Void Launcher\" as the home app if asked.")
             } catch (t: Throwable) {
                 say("Error: ${t.javaClass.simpleName}: ${t.message}")
             } finally {
