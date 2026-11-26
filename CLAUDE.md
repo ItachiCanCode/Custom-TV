@@ -19,7 +19,7 @@ Guidance for Claude (and other AI assistants) working in this repository.
 | Gradle | 8.7 |
 | JDK | 17 (Temurin) |
 | compileSdk / targetSdk | 34 |
-| minSdk | 24 |
+| minSdk | 21 |
 
 There is **no Gradle wrapper** checked in. CI installs Gradle 8.7 via `gradle/actions/setup-gradle`. Locally, use Android Studio or a system Gradle 8.7.
 

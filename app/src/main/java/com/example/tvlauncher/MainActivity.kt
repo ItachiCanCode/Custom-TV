@@ -144,7 +144,8 @@ class MainActivity : Activity() {
     private fun favs(): Set<String> = prefs.getStringSet("favs", emptySet()) ?: emptySet()
 
     /** Focusable glass pill in the header that opens a system settings screen. */
-    private fun headerButton(label: String, action: String): View {
+    private fun headerButton(label: String, action: String): View? {
+        if (packageManager.resolveActivity(Intent(action), 0) == null) return null   // not on this TV
         val glass = GlassDrawable(24 * dp, 1.5f * dp, true)
         return TextView(this).apply {
             text = label; textSize = 20f; setTextColor(Color.WHITE)
@@ -169,8 +170,8 @@ class MainActivity : Activity() {
             text = "Home"; textSize = 30f; setTextColor(Color.WHITE)
             typeface = android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL)
         }, LinearLayout.LayoutParams(0, -2, 1f))
-        header.addView(headerButton("Wi-Fi", android.provider.Settings.ACTION_WIFI_SETTINGS))
-        header.addView(headerButton("Settings", android.provider.Settings.ACTION_SETTINGS))
+        headerButton("Wi-Fi", android.provider.Settings.ACTION_WIFI_SETTINGS)?.let { header.addView(it) }
+        headerButton("Settings", android.provider.Settings.ACTION_SETTINGS)?.let { header.addView(it) }
         header.addView(TextClock(this).apply {
             format12Hour = "EEE, MMM d"; format24Hour = "EEE, MMM d"
             textSize = 20f; setTextColor(Color.WHITE)
@@ -327,6 +328,7 @@ class MainActivity : Activity() {
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             isFocusable = true; isClickable = true
+            tag = e
             clipChildren = false
             addView(card, LinearLayout.LayoutParams(wPx, hPx))
             addView(label, LinearLayout.LayoutParams(wPx, -2))
@@ -364,6 +366,10 @@ class MainActivity : Activity() {
         if (crashShown && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)) {
             getSharedPreferences("launcher", MODE_PRIVATE).edit().remove("crash").apply()
             recreate(); return true
+        }
+        // For remotes where long-press is unreliable: Menu / Info / Y opens the app menu.
+        if (keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_INFO || keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
+            (currentFocus?.tag as? AppEntry)?.let { showMenu(it); return true }
         }
         return if (keyCode == KeyEvent.KEYCODE_BACK) true else super.onKeyDown(keyCode, event)
     }

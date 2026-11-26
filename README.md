@@ -13,7 +13,7 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 - Back never closes the home screen
 
 ## Requirements
-- Android TV / Google TV device or emulator running **Android 7.0 (API 24)** or newer
+- Android TV / Google TV device or emulator running **Android 5.0 (API 21)** or newer
 - A way to sideload an APK (for example `adb` or a file-manager app)
 
 ## Install
@@ -38,7 +38,7 @@ Before using either: on the TV open Settings > Device Preferences > About, click
 |---|---|
 | Move focus | D-pad |
 | Launch app / press a button | OK |
-| Open app menu (pin, info, uninstall) | Long-press OK |
+| Open app menu (pin, info, uninstall) | Long-press OK, or the Menu / Info button |
 | Retry after a crash screen | OK |
 
 ## Build locally
@@ -62,6 +62,14 @@ setup-windows/          Windows app that does the same (.NET WinForms)
   build-setup.yml       builds the Android and Windows setup apps
   release.yml           on a v* tag, publishes the launcher and both setup apps
 ```
+
+## Compatibility
+- Works on Android TV and Google TV from Android 5.0 (API 21) through Android 14, at 720p, 1080p and 4K (all sizes are in dp, and the grid adapts to the screen width).
+- A CI job launches the launcher on TV emulators for Android 5.0, 9, 11 and 14, presses remote keys, opens the app menu and fails on any crash (see the **TV Compatibility** workflow).
+- Wi-Fi and Settings buttons only appear if the TV has those settings screens.
+- Works with a remote (D-pad), a mouse, and a gamepad.
+- **Limits:** some TVs do not let you change the default home app (for example Amazon Fire TV and some operator or OEM builds). There the launcher still installs and opens from the app list, but the Home button keeps opening the stock launcher. This can't be fixed from inside the app.
+- Not verified on physical hardware yet. Please report your TV model and Android version in Issues.
 
 ## Troubleshooting
 - **Red "Launcher error" screen:** photograph or copy the text, then press OK to retry. Include the text if you file a bug.
