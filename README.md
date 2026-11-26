@@ -64,8 +64,8 @@ setup-windows/          Windows app that does the same (.NET WinForms)
 ```
 
 ## Compatibility
-- Works on Android TV and Google TV from Android 5.0 (API 21) through Android 14, at 720p, 1080p and 4K (all sizes are in dp, and the grid adapts to the screen width).
-- A CI job launches the launcher on TV emulators for Android 5.0, 9, 11 and 14, presses remote keys, opens the app menu and fails on any crash (see the **TV Compatibility** workflow).
+- Built for Android TV and Google TV from Android 5.0 (API 21) through Android 14, at 720p, 1080p and 4K (all sizes are in dp, and the grid adapts to the screen width). The build fails if the code uses an API newer than Android 5.0 without a guard.
+- A CI job launches the launcher on TV emulators for Android 9, 11 and 14, presses remote keys, opens the app menu and fails on any crash (see the **TV Compatibility** workflow). Android 5.0 to 8.x are not covered by the emulator test yet, so they are untested.
 - Wi-Fi and Settings buttons only appear if the TV has those settings screens.
 - Works with a remote (D-pad), a mouse, and a gamepad.
 - **Limits:** some TVs do not let you change the default home app (for example Amazon Fire TV and some operator or OEM builds). There the launcher still installs and opens from the app list, but the Home button keeps opening the stock launcher. This can't be fixed from inside the app.
