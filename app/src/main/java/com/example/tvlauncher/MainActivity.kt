@@ -85,7 +85,13 @@ class MainActivity : Activity() {
                 intArrayOf(Color.parseColor("#26365C"), Color.parseColor("#0A0D17"))
             )
             clipChildren = false
-            addView(content)
+            addView(ScrollView(this@MainActivity).apply {
+                isVerticalScrollBarEnabled = false
+                overScrollMode = View.OVER_SCROLL_NEVER
+                clipChildren = false; clipToPadding = false
+                isFillViewport = true
+                addView(content)
+            })
         }
         // Soft drifting color blobs: they give the glass something to "frost".
         root.addView(blob("#553A7BFF", 520, Gravity.TOP or Gravity.END, -120, -160, -60f, 40f, 22000), 0)
@@ -111,7 +117,9 @@ class MainActivity : Activity() {
         val lp = FrameLayout.LayoutParams((sizeDp * dp).toInt(), (sizeDp * dp).toInt(), gravity)
         lp.setMargins((mx * dp).toInt(), (my * dp).toInt(), (mx * dp).toInt(), (my * dp).toInt())
         v.layoutParams = lp
-        for ((prop, d) in listOf("translationX" to dx, "translationY" to dy)) {
+        v.setLayerType(View.LAYER_TYPE_HARDWARE, null)   // composite on the GPU instead of redrawing
+        val lowRam = (getSystemService(ACTIVITY_SERVICE) as android.app.ActivityManager).isLowRamDevice
+        if (!lowRam) for ((prop, d) in listOf("translationX" to dx, "translationY" to dy)) {
             ObjectAnimator.ofFloat(v, prop, 0f, d * dp).apply {
                 duration = ms; repeatCount = ValueAnimator.INFINITE
                 repeatMode = ValueAnimator.REVERSE
@@ -138,7 +146,7 @@ class MainActivity : Activity() {
     private fun headerButton(label: String, action: String): View {
         val glass = GlassDrawable(24 * dp, 1.5f * dp, true)
         return TextView(this).apply {
-            text = label; textSize = 18f; setTextColor(Color.WHITE)
+            text = label; textSize = 20f; setTextColor(Color.WHITE)
             background = glass
             isFocusable = true; isClickable = true
             setPadding((22 * dp).toInt(), (8 * dp).toInt(), (22 * dp).toInt(), (8 * dp).toInt())
@@ -164,8 +172,10 @@ class MainActivity : Activity() {
         header.addView(headerButton("Settings", android.provider.Settings.ACTION_SETTINGS))
         header.addView(TextClock(this).apply {
             format12Hour = "EEE, MMM d"; format24Hour = "EEE, MMM d"
-            textSize = 18f; setTextColor(Color.parseColor("#B3FFFFFF"))
-            setPadding(0, 0, (16 * dp).toInt(), 0)
+            textSize = 20f; setTextColor(Color.WHITE)
+            background = GlassDrawable(24 * dp, 1.5f * dp, true)
+            setPadding((22 * dp).toInt(), (8 * dp).toInt(), (22 * dp).toInt(), (8 * dp).toInt())
+            layoutParams = LinearLayout.LayoutParams(-2, -2).apply { marginEnd = (16 * dp).toInt() }
         })
         header.addView(TextClock(this).apply {
             format12Hour = "h:mm a"; format24Hour = "HH:mm"
@@ -180,10 +190,10 @@ class MainActivity : Activity() {
         if (favApps.isNotEmpty()) section("Favorites", favApps, 300, 169)
         else content.addView(TextView(this).apply {
             text = "Long-press any app to pin it here"
-            textSize = 16f; setTextColor(Color.parseColor("#88FFFFFF"))
+            textSize = 20f; setTextColor(Color.parseColor("#CCFFFFFF"))
             setPadding(0, (28 * dp).toInt(), 0, 0)
         })
-        section("All Apps", apps, 200, 113, trackAll = true)
+        gridSection("All Apps", apps, 200, 113)
 
         content.post {
             val target = pendingFocusPkg?.let { allTiles[it] } ?: firstTile
@@ -207,11 +217,34 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun sectionTitle(title: String) = TextView(this).apply {
+        text = title; textSize = 22f; setTextColor(Color.parseColor("#E6FFFFFF"))
+        setPadding(0, (28 * dp).toInt(), 0, 0)
+    }
+
+    /** All apps as a wrapping grid so any app is a few D-pad presses away. */
+    private fun gridSection(title: String, list: List<AppEntry>, w: Int, h: Int) {
+        content.addView(sectionTitle(title))
+        val availDp = resources.displayMetrics.widthPixels / dp - 112f
+        val cols = ((availDp + 20f) / (w + 20f)).toInt().coerceAtLeast(1)
+        val grid = GridLayout(this).apply {
+            columnCount = cols
+            clipChildren = false; clipToPadding = false
+            setPadding(0, (22 * dp).toInt(), 0, (22 * dp).toInt())
+        }
+        list.forEach { e ->
+            val t = tile(e, w, h)
+            if (firstTile == null) firstTile = t
+            allTiles[e.pkg] = t
+            grid.addView(t, GridLayout.LayoutParams().apply {
+                setMargins(0, 0, (20 * dp).toInt(), (14 * dp).toInt())
+            })
+        }
+        content.addView(grid, LinearLayout.LayoutParams(-1, -2))
+    }
+
     private fun section(title: String, list: List<AppEntry>, w: Int, h: Int, trackAll: Boolean = false) {
-        content.addView(TextView(this).apply {
-            text = title; textSize = 18f; setTextColor(Color.parseColor("#B3FFFFFF"))
-            setPadding(0, (28 * dp).toInt(), 0, 0)
-        })
+        content.addView(sectionTitle(title))
         val row = LinearLayout(this).apply { clipChildren = false; clipToPadding = false }
         list.forEach { e ->
             val tile = tile(e, w, h)
@@ -251,9 +284,10 @@ class MainActivity : Activity() {
         }
 
         val label = TextView(this).apply {
-            text = e.label; textSize = 15f; setTextColor(Color.WHITE)
+            text = e.label; textSize = 18f; setTextColor(Color.WHITE)
+            setShadowLayer(4 * dp, 0f, 1 * dp, Color.parseColor("#99000000"))
             maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
-            gravity = Gravity.CENTER; alpha = 0f; translationY = -6 * dp
+            gravity = Gravity.CENTER; alpha = 0.8f
             setPadding(0, (10 * dp).toInt(), 0, 0)
         }
 
@@ -277,8 +311,7 @@ class MainActivity : Activity() {
                     }
                     start()
                 }
-                label.animate().alpha(if (focused) 1f else 0f)
-                    .translationY(if (focused) 0f else -6 * dp)
+                label.animate().alpha(if (focused) 1f else 0.8f)
                     .setDuration(260).setInterpolator(ease).start()
                 if (focused) centerInRow(v)
             }

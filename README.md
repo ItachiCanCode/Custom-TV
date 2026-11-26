@@ -5,7 +5,7 @@
 A custom **Android TV home launcher** with a frosted-glass look, animated background, clock and date, a Favorites row, and quick Wi-Fi and Settings buttons. Fully D-pad (remote) driven, with no third-party dependencies.
 
 ## Features
-- Lists all installed Leanback and regular launcher apps, sorted A-Z
+- Shows all installed Leanback and regular launcher apps in a wrapping A-Z grid, with names always visible
 - **Favorites** row: long-press any app to pin or unpin it
 - Focus animations (scale, glass highlight, label reveal) with smooth centered scrolling
 - Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
