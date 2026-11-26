@@ -20,6 +20,7 @@ import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -41,6 +42,7 @@ class MainActivity : Activity() {
     private val allTiles = mutableMapOf<String, View>()
     private val ease = PathInterpolator(0.2f, 0f, 0f, 1f)   // fast start, long soft landing
     private var firstRender = true
+    private var crashShown = false
 
     // Scroll view that doesn't jump on focus; we animate the scroll ourselves.
     class SmoothScroll(c: android.content.Context) : HorizontalScrollView(c) {
@@ -49,6 +51,27 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val prefs = getSharedPreferences("launcher", MODE_PRIVATE)
+        val old = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            try { prefs.edit().putString("crash", Log.getStackTraceString(e)).commit() } catch (_: Throwable) {}
+            old?.uncaughtException(t, e)
+        }
+        val saved = prefs.getString("crash", null)
+        if (saved != null) { showCrash(saved); return }
+        try { buildUi() } catch (e: Throwable) { showCrash(Log.getStackTraceString(e)) }
+    }
+
+    private fun showCrash(text: String) {
+        crashShown = true
+        val tv = TextView(this).apply {
+            this.text = "Launcher error. Photo this screen, then press OK to retry.\n\n" + text
+            textSize = 13f; setTextColor(Color.WHITE); setPadding(48, 32, 48, 32)
+        }
+        setContentView(ScrollView(this).apply { setBackgroundColor(Color.parseColor("#400000")); addView(tv) })
+    }
+
+    private fun buildUi() {
         dp = resources.displayMetrics.density
         content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -73,8 +96,8 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
-        loadApps()
-        render()
+        if (crashShown) return
+        try { loadApps(); render() } catch (e: Throwable) { showCrash(Log.getStackTraceString(e)) }
     }
 
     private fun blob(color: String, sizeDp: Int, gravity: Int, mx: Int, my: Int,
@@ -258,8 +281,13 @@ class MainActivity : Activity() {
     }
 
     // Home screen shouldn't close on Back.
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean =
-        if (keyCode == KeyEvent.KEYCODE_BACK) true else super.onKeyDown(keyCode, event)
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (crashShown && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)) {
+            getSharedPreferences("launcher", MODE_PRIVATE).edit().remove("crash").apply()
+            recreate(); return true
+        }
+        return if (keyCode == KeyEvent.KEYCODE_BACK) true else super.onKeyDown(keyCode, event)
+    }
 }
 
 
