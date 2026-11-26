@@ -288,7 +288,7 @@ class GlassDrawable(
         )
         strokePaint.shader = LinearGradient(
             b.left.toFloat(), b.top.toFloat(), b.right.toFloat(), b.bottom.toFloat(),
-            intArrayOf(-0x1, 0x30FFFFFF, 0x90FFFFFF), floatArrayOf(0f, 0.55f, 1f),
+            intArrayOf(-0x1, 0x30FFFFFF, 0x90FFFFFF.toInt()), floatArrayOf(0f, 0.55f, 1f),
             Shader.TileMode.CLAMP
         )
     }
