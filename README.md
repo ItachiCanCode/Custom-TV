@@ -1,80 +1,77 @@
-# Custom-TV
+# Custom-TV (TvLauncher)
 
-A custom Android TV launcher built with Kotlin. It provides a frosted-glass home screen for discovering, opening, and pinning TV and mobile apps.
+![Build APK](https://github.com/ItachiCanCode/Custom-TV/actions/workflows/build.yml/badge.svg)
+
+A custom **Android TV home launcher** with a frosted-glass look, animated background, clock and date, a Favorites row, and quick Wi-Fi and Settings buttons. Fully D-pad (remote) driven, with no third-party dependencies.
 
 ## Features
-
-- Android TV launcher with HOME and Leanback support
-- Favorites and all-app rows
-- Installed-app discovery for both TV and standard Android apps
-- Long-press pinning for quick access
-- D-pad and remote-friendly focus navigation
-- Horizontal row scrolling that follows focused apps
-- Frosted-glass cards and animated background effects
-- On-screen crash report for startup failures
+- Lists all installed Leanback and regular launcher apps, sorted A-Z
+- **Favorites** row: long-press any app to pin or unpin it
+- Focus animations (scale, glass highlight, label reveal) with smooth centered scrolling
+- Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
+- On-screen crash report on the next launch, for debugging on real TV hardware
+- Back never closes the home screen
 
 ## Requirements
-
-- Android device or emulator running Android 7.0 (API 24) or newer
-- Android Studio with JDK 17
-- Android SDK 34
-- Gradle 8.7
-
-## Build
-
-Clone the repository and open it in Android Studio:
-
-```bash
-git clone https://github.com/ItachiCanCode/Custom-TV.git
-cd Custom-TV
-```
-
-Build a debug APK with Gradle:
-
-```bash
-gradle assembleDebug --no-daemon
-```
-
-The APK is written to:
-
-```text
-app/build/outputs/apk/debug/app-debug.apk
-```
+- Android TV / Google TV device or emulator running **Android 7.0 (API 24)** or newer
+- A way to sideload an APK (for example `adb` or a file-manager app)
 
 ## Install
+1. Open the **Actions** tab, pick the latest **Build APK** run, and download the `TvLauncher-debug-apk` artifact.
+   Tagged releases (`v*`) publish the launcher APK and the setup apps on the **Releases** page.
+2. Unzip if needed, then sideload `app-debug.apk` onto your TV, for example:
+   ```
+   adb connect <tv-ip-address>
+   adb install app-debug.apk
+   ```
+3. Press **Home** and choose **My Launcher** as the default home app.
 
-With an Android device connected through ADB:
+## Easy setup apps (no command line)
+Each release includes two helpers that install the launcher on your TV for you:
+- **`TvSetup-android.apk`**: install on your Android phone, enter the TV's IP address, tap **Install launcher on TV**.
+- **`TvLauncherSetup.exe`**: Windows app. Enter the TV's IP address, click **Install launcher on TV** (it fetches `adb` automatically). You can also pick a local APK.
 
-```bash
-adb install app/build/outputs/apk/debug/app-debug.apk
-```
-
-After installation, open the launcher and choose it as your device's default Home app when prompted.
+Before using either: on the TV open Settings > Device Preferences > About, click **Build** 7 times, then in Developer options enable **Network/USB debugging**. Keep the phone or PC on the same Wi-Fi as the TV and accept the debugging prompt shown on the TV. TVs that only offer "Wireless debugging" with a pairing code are not supported yet.
 
 ## Controls
+| Action | Remote |
+|---|---|
+| Move focus | D-pad |
+| Launch app / press a button | OK |
+| Pin or unpin a favorite | Long-press OK |
+| Retry after a crash screen | OK |
 
-- Use the D-pad to move between apps.
-- Press OK/Enter to launch the focused app.
-- Long-press an app to add or remove it from Favorites.
-- Press Back to keep the launcher open.
+## Build locally
+Requires JDK 17, the Android SDK (platform 34), and Gradle 8.7. There is no Gradle wrapper in the repo.
 
-## Automation
-
-The GitHub Actions workflow at [`.github/workflows/build.yml`](.github/workflows/build.yml) builds the debug APK on pushes and manual runs. The generated APK is uploaded as `TvLauncher-debug-apk`.
-
-## Project Structure
-
-```text
-.
-├── app/src/main/
-│   ├── java/com/example/tvlauncher/MainActivity.kt
-│   ├── res/
-│   └── AndroidManifest.xml
-├── .github/workflows/build.yml
-├── build.gradle.kts
-└── settings.gradle.kts
+```
+gradle assembleDebug
 ```
 
-## License
+Output: `app/build/outputs/apk/debug/app-debug.apk`
 
-No license has been specified for this repository.
+## Project structure
+```
+app/src/main/
+  AndroidManifest.xml                          HOME + LEANBACK_LAUNCHER intent filter
+  java/com/example/tvlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
+  res/                                         theme and TV banner
+.github/workflows/
+  build.yml                                    builds the debug APK on every push and PR
+  release.yml                                  publishes the APK when a v* tag is pushed
+```
+
+## Troubleshooting
+- **Red "Launcher error" screen:** photograph or copy the text, then press OK to retry. Include the text if you file a bug.
+- **Launcher not offered when pressing Home:** some TVs restrict changing the default home app. Look under the TV's Settings for Apps or Default apps, or reboot after installing.
+- **Want the original launcher back:** change the default home app in the same Settings area, or uninstall this app.
+- **An app is missing:** only apps that declare a launcher or Leanback launcher activity are listed.
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md). For the code layout, conventions, and verification checklist, see [CLAUDE.md](CLAUDE.md), which works for humans and AI assistants alike.
+
+## Status
+**Beta.** Expect rough edges. Please report problems in [Issues](https://github.com/ItachiCanCode/Custom-TV/issues).
+
+## License
+MIT. See [LICENSE](LICENSE).
