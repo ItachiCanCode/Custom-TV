@@ -34,9 +34,10 @@ sleep 2
 shot 4-after-back
 adb logcat -d > "$OUT/api$API-logcat.txt"
 
-if grep -q "FATAL EXCEPTION" "$OUT/api$API-logcat.txt"; then
-  annotate error "crash detected:
-$(grep -A30 'FATAL EXCEPTION' "$OUT/api$API-logcat.txt" | head -45)"
+# Only crashes of OUR process count (the emulator's own system apps may crash on their own).
+if grep -q "Process: $PKG," "$OUT/api$API-logcat.txt"; then
+  annotate error "launcher crash detected:
+$(grep -B1 -A30 "Process: $PKG," "$OUT/api$API-logcat.txt" | head -45)"
   exit 1
 fi
 if ! adb shell "ps -A 2>/dev/null || ps" | grep -q "$PKG"; then
