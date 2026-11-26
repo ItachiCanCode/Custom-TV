@@ -11,6 +11,7 @@
             <category android:name="android.intent.category.LAUNCHER" /></intent>
     </queries>
 
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <application
         android:label="My Launcher"
         android:banner="@drawable/banner"

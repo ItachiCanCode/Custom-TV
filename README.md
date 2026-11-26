@@ -6,7 +6,7 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 
 ## Features
 - Shows all installed Leanback and regular launcher apps in a wrapping A-Z grid, with names always visible
-- **Favorites** row: long-press any app to pin or unpin it
+- **Favorites** row, plus a long-press menu on any app: pin/unpin, App info, Uninstall
 - Focus animations (scale and glass highlight) with smooth scrolling
 - Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
 - On-screen crash report on the next launch, for debugging on real TV hardware
@@ -38,7 +38,7 @@ Before using either: on the TV open Settings > Device Preferences > About, click
 |---|---|
 | Move focus | D-pad |
 | Launch app / press a button | OK |
-| Pin or unpin a favorite | Long-press OK |
+| Open app menu (pin, info, uninstall) | Long-press OK |
 | Retry after a crash screen | OK |
 
 ## Build locally

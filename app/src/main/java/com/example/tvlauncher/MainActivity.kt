@@ -7,6 +7,7 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.graphics.Color
 import android.graphics.Canvas
 import android.graphics.ColorFilter
@@ -217,6 +218,38 @@ class MainActivity : Activity() {
         }
     }
 
+    /** Long-press menu: pin/unpin, app info, uninstall. */
+    private fun showMenu(e: AppEntry) {
+        val pinned = e.pkg in favs()
+        val items = arrayOf(if (pinned) "Remove from Favorites" else "Pin to Favorites", "App info", "Uninstall")
+        android.app.AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle(e.label)
+            .setItems(items) { _, which ->
+                try {
+                    when (which) {
+                        0 -> toggleFavorite(e.pkg)
+                        1 -> startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.parse("package:" + e.pkg)))
+                        2 -> startActivity(Intent(Intent.ACTION_DELETE, Uri.parse("package:" + e.pkg)))
+                    }
+                } catch (_: Throwable) {
+                    Toast.makeText(this, "Not available on this device", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .show()
+    }
+
+    private fun toggleFavorite(pkg: String) {
+        val set = favs().toMutableSet()
+        val pinned = set.add(pkg)
+        if (!pinned) set.remove(pkg)
+        prefs.edit().putStringSet("favs", set).apply()
+        Toast.makeText(this, if (pinned) "Pinned to Favorites" else "Removed from Favorites",
+            Toast.LENGTH_SHORT).show()
+        pendingFocusPkg = pkg
+        render()
+    }
+
     private fun sectionTitle(title: String) = TextView(this).apply {
         text = title; textSize = 22f; setTextColor(Color.parseColor("#E6FFFFFF"))
         setPadding(0, (28 * dp).toInt(), 0, 0)
@@ -322,17 +355,7 @@ class MainActivity : Activity() {
                         startActivity(it, o.toBundle())
                     }
             }
-            setOnLongClickListener {
-                val set = favs().toMutableSet()
-                val pinned = set.add(e.pkg)
-                if (!pinned) set.remove(e.pkg)
-                prefs.edit().putStringSet("favs", set).apply()
-                Toast.makeText(context, if (pinned) "Pinned to Favorites" else "Removed from Favorites",
-                    Toast.LENGTH_SHORT).show()
-                pendingFocusPkg = e.pkg
-                render()
-                true
-            }
+            setOnLongClickListener { showMenu(e); true }
         }
     }
 
