@@ -46,7 +46,7 @@ app/src/main/
 - `onCreate` installs an uncaught-exception handler that saves the stack trace to SharedPreferences (`launcher` / `crash`). On next launch, `showCrash()` displays it on screen. Pressing OK/Enter clears it and calls `recreate()`.
 - `buildUi()` creates the root `FrameLayout` (gradient background plus three animated "blob" views) and the vertical `content` container.
 - `loadApps()` queries `CATEGORY_LEANBACK_LAUNCHER` and `CATEGORY_LAUNCHER`, excludes this app, de-duplicates by package, and sorts by label.
-- `render()` rebuilds the whole screen: header (title + `TextClock`), Favorites section (or a hint), and All Apps section.
+- `render()` rebuilds the whole screen: header (title, Settings button, date and time `TextClock`s), Favorites section (or a hint), and All Apps section.
 - `tile()` builds one app tile: banner or icon in a glass card, a label shown only on focus, focus scale/elevation animation, click to launch, long-press to toggle favorite.
 - `centerInRow()` animates horizontal scrolling itself. `SmoothScroll` disables the framework's focus-jump scrolling.
 - `onKeyDown` swallows Back so the home screen never closes.

@@ -144,6 +144,22 @@ class MainActivity : Activity() {
             text = "Home"; textSize = 30f; setTextColor(Color.WHITE)
             typeface = android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL)
         }, LinearLayout.LayoutParams(0, -2, 1f))
+        val settingsGlass = GlassDrawable(24 * dp, 1.5f * dp, true)
+        header.addView(TextView(this).apply {
+            text = "Settings"; textSize = 18f; setTextColor(Color.WHITE)
+            background = settingsGlass
+            isFocusable = true; isClickable = true
+            setPadding((22 * dp).toInt(), (8 * dp).toInt(), (22 * dp).toInt(), (8 * dp).toInt())
+            setOnFocusChangeListener { _, f -> settingsGlass.intensity = if (f) 1f else 0f }
+            setOnClickListener {
+                try { startActivity(Intent(android.provider.Settings.ACTION_SETTINGS)) } catch (_: Throwable) {}
+            }
+        }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = (16 * dp).toInt() })
+        header.addView(TextClock(this).apply {
+            format12Hour = "EEE, MMM d"; format24Hour = "EEE, MMM d"
+            textSize = 18f; setTextColor(Color.parseColor("#B3FFFFFF"))
+            setPadding(0, 0, (16 * dp).toInt(), 0)
+        })
         header.addView(TextClock(this).apply {
             format12Hour = "h:mm a"; format24Hour = "HH:mm"
             textSize = 22f; setTextColor(Color.WHITE)
