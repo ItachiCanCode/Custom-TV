@@ -54,7 +54,7 @@ Output: `app/build/outputs/apk/debug/VoidLauncher-debug.apk`
 ```
 app/                    Void Launcher (the TV app)
   src/main/AndroidManifest.xml                 HOME + LEANBACK_LAUNCHER intent filter
-  src/main/java/com/example/voidlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
+  src/main/java/io/github/itachicancode/voidlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
 setup-android/          phone app that installs the launcher on a TV over ADB
 setup-windows/          Windows app that does the same (.NET WinForms)
 .github/workflows/

@@ -1,4 +1,4 @@
-package com.example.voidsetup
+package io.github.itachicancode.voidlauncher.setup
 
 import android.app.Activity
 import android.graphics.Color
@@ -10,22 +10,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import dadb.AdbKeyPair
-import dadb.Dadb
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
 
-/**
- * Phone companion: downloads the latest VoidLauncher APK and installs it on an
- * Android TV over the network (ADB over TCP, port 5555 by default).
- */
+/** Phone companion: downloads the latest Void Launcher APK and installs it on an Android TV over ADB (TCP). */
 class MainActivity : Activity() {
-
-    companion object {
-        const val APK_URL = "https://github.com/ItachiCanCode/Custom-TV/releases/latest/download/VoidLauncher.apk"
-        const val LAUNCHER_ACTIVITY = "com.example.voidlauncher/.MainActivity"
-    }
 
     private lateinit var ipField: EditText
     private lateinit var installBtn: Button
@@ -52,14 +40,14 @@ class MainActivity : Activity() {
             textSize = 14f; setTextColor(Color.parseColor("#B3FFFFFF")); setPadding(0, pad / 2, 0, pad / 2)
         })
         ipField = EditText(this).apply {
-            hint = "TV IP address (e.g. 192.168.1.50)"
+            hint = "TV IP address (for example 192.168.1.50)"
             setHintTextColor(Color.GRAY); setTextColor(Color.WHITE)
             inputType = InputType.TYPE_CLASS_TEXT
             setText(prefs.getString("ip", ""))
         }
         root.addView(ipField)
         installBtn = Button(this).apply {
-            text = "Install launcher on TV"
+            text = "Install Void Launcher on TV"
             setOnClickListener { startInstall() }
         }
         root.addView(installBtn)
@@ -67,8 +55,7 @@ class MainActivity : Activity() {
             textSize = 13f; setTextColor(Color.parseColor("#D0FFFFFF")); gravity = Gravity.START
             setTextIsSelectable(true)
         }
-        root.addView(ScrollView(this).apply { addView(log) },
-            LinearLayout.LayoutParams(-1, 0, 1f))
+        root.addView(ScrollView(this).apply { addView(log) }, LinearLayout.LayoutParams(-1, 0, 1f))
         setContentView(root)
     }
 
@@ -83,38 +70,22 @@ class MainActivity : Activity() {
         installBtn.isEnabled = false
         Thread {
             try {
-                say("Downloading latest launcher APK...")
-                val apk = File(cacheDir, "launcher.apk")
-                download(APK_URL, apk)
+                say("Downloading latest Void Launcher APK...")
+                val apk = File(cacheDir, "VoidLauncher.apk")
+                Installer.download(Installer.APK_URL, apk)
                 say("Downloaded ${apk.length() / 1024} KB.")
-
-                val priv = File(filesDir, "adbkey")
-                val pub = File(filesDir, "adbkey.pub")
-                if (!priv.exists()) AdbKeyPair.generate(priv, pub)
-                val keys = AdbKeyPair.read(priv, pub)
-
                 say("Connecting to $host:$port (accept the prompt on the TV)...")
-                Dadb.create(host, port, keys).use { adb ->
-                    say("Installing...")
-                    adb.install(apk)
-                    say("Installed. Opening the home chooser on the TV...")
-                    try { adb.shell("cmd package set-home-activity $LAUNCHER_ACTIVITY") } catch (_: Throwable) {}
-                    adb.shell("am start -a android.intent.action.MAIN -c android.intent.category.HOME")
-                }
-                say("Done! On the TV choose \"Void Launcher\" as the home app if asked.")
+                val homeSet = Installer.install(host, port, Installer.keyPair(filesDir), apk, ::say)
+                say(
+                    if (homeSet) "Done! Void Launcher is now the home app."
+                    else "Done! If the TV asks, choose Void Launcher as the home app. " +
+                        "Some TVs only allow changing it in the TV's own settings."
+                )
             } catch (t: Throwable) {
                 say("Error: ${t.javaClass.simpleName}: ${t.message}")
             } finally {
                 runOnUiThread { installBtn.isEnabled = true }
             }
         }.start()
-    }
-
-    private fun download(url: String, out: File) {
-        val c = URL(url).openConnection() as HttpURLConnection
-        c.instanceFollowRedirects = true
-        c.connectTimeout = 15000; c.readTimeout = 30000
-        if (c.responseCode != 200) throw RuntimeException("Download failed: HTTP ${c.responseCode} (is there a published release?)")
-        c.inputStream.use { i -> out.outputStream().use { o -> i.copyTo(o) } }
     }
 }

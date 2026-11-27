@@ -6,7 +6,7 @@ Guidance for Claude (and other AI assistants) working in this repository.
 
 **Void Launcher** is a custom Android TV home-screen launcher. It lists installed apps as tiles, supports a pinned **Favorites** row, and uses a frosted-glass visual style with animated background blobs and a clock. It is driven entirely by the D-pad (TV remote).
 
-- Package / applicationId: `com.example.voidlauncher`
+- Package / applicationId: `io.github.itachicancode.voidlauncher`
 - Single module: `:app` (root project name `VoidLauncher`)
 - Language: Kotlin, plain Android `Activity` and `android.widget` views. No Compose, no AndroidX, no XML layouts.
 
@@ -37,7 +37,7 @@ CI (`.github/workflows/build.yml`, "Build APK") runs this on every push and on m
 ```
 app/src/main/
   AndroidManifest.xml                      # HOME + LEANBACK_LAUNCHER intent filter, <queries> for package visibility
-  java/com/example/voidlauncher/MainActivity.kt   # all app logic + GlassDrawable
+  java/io/github/itachicancode/voidlauncher/MainActivity.kt   # all app logic + GlassDrawable
   res/values/styles.xml                    # Theme.VoidLauncher (transparent, shows wallpaper)
   res/drawable/banner.xml                  # TV banner (solid blue rectangle)
 ```

@@ -7,5 +7,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>VoidLauncherSetup</AssemblyName>
     <RootNamespace>VoidLauncherSetup</RootNamespace>
+    <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>

@@ -22,7 +22,7 @@ class MainForm : Form
 {
     const string ApkUrl = "https://github.com/ItachiCanCode/Custom-TV/releases/latest/download/VoidLauncher.apk";
     const string AdbZipUrl = "https://dl.google.com/android/repository/platform-tools-latest-windows.zip";
-    const string LauncherActivity = "com.example.voidlauncher/.MainActivity";
+    const string LauncherActivity = "io.github.itachicancode.voidlauncher/.MainActivity";
 
     readonly TextBox ipBox = new() { PlaceholderText = "TV IP address, e.g. 192.168.1.50", Width = 260 };
     readonly TextBox apkBox = new() { PlaceholderText = "Optional: path to a local APK (leave empty to download latest)", Dock = DockStyle.Fill };
@@ -35,6 +35,7 @@ class MainForm : Form
     public MainForm()
     {
         Text = "Void Launcher Setup";
+        try { Icon = Icon.ExtractAssociatedIcon(Environment.ProcessPath!); } catch { /* keep default window icon */ }
         Width = 720; Height = 520;
         StartPosition = FormStartPosition.CenterScreen;
 

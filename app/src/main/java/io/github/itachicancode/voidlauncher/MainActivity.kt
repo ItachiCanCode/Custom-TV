@@ -1,4 +1,4 @@
-package com.example.voidlauncher
+package io.github.itachicancode.voidlauncher
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -329,6 +329,7 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             isFocusable = true; isClickable = true
             tag = e
+            contentDescription = e.label
             clipChildren = false
             addView(card, LinearLayout.LayoutParams(wPx, hPx))
             addView(label, LinearLayout.LayoutParams(wPx, -2))
