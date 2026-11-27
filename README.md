@@ -6,6 +6,7 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 
 ## Features
 - Shows all installed Leanback and regular launcher apps in a wrapping A-Z grid, with names always visible
+- Every app keeps its **original artwork**: its own TV banner, or its real icon on a backdrop tinted from the icon's colors
 - **Favorites** row, plus a long-press menu on any app: pin/unpin, App info, Uninstall
 - Focus animations (scale and glass highlight) with smooth scrolling
 - Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
@@ -54,7 +55,7 @@ Output: `app/build/outputs/apk/debug/VoidLauncher-debug.apk`
 ```
 app/                    Void Launcher (the TV app)
   src/main/AndroidManifest.xml                 HOME + LEANBACK_LAUNCHER intent filter
-  src/main/java/com/example/voidlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
+  src/main/java/io/github/itachicancode/voidlauncher/MainActivity.kt  UI, app list, favorites, GlassDrawable
 setup-android/          phone app that installs the launcher on a TV over ADB
 setup-windows/          Windows app that does the same (.NET WinForms)
 .github/workflows/

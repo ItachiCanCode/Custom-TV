@@ -5,10 +5,10 @@ plugins {
 base { archivesName.set("VoidLauncherSetup") }
 
 android {
-    namespace = "com.example.voidsetup"
+    namespace = "io.github.itachicancode.voidlauncher.setup"
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.example.voidsetup"
+        applicationId = "io.github.itachicancode.voidlauncher.setup"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -23,4 +23,5 @@ android {
 }
 dependencies {
     implementation("dev.mobile:dadb:1.2.10")
+    testImplementation("junit:junit:4.13.2")
 }
