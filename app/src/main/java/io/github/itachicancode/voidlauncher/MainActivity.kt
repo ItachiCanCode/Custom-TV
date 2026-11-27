@@ -294,6 +294,29 @@ class MainActivity : Activity() {
         }, LinearLayout.LayoutParams(-1, -2))
     }
 
+    /** Average opaque color of an icon (sampled at 16x16). */
+    private fun dominantColor(d: Drawable): Int {
+        val bmp = android.graphics.Bitmap.createBitmap(16, 16, android.graphics.Bitmap.Config.ARGB_8888)
+        d.setBounds(0, 0, 16, 16)
+        d.draw(Canvas(bmp))
+        var r = 0L; var g = 0L; var b = 0L; var n = 0L
+        for (y in 0 until 16) for (x in 0 until 16) {
+            val px = bmp.getPixel(x, y)
+            if (Color.alpha(px) > 128) { r += Color.red(px); g += Color.green(px); b += Color.blue(px); n++ }
+        }
+        bmp.recycle()
+        return if (n == 0L) Color.parseColor("#1B1F3A") else Color.rgb((r / n).toInt(), (g / n).toInt(), (b / n).toInt())
+    }
+
+    /** Same hue, capped saturation, brightness scaled to [value]: keeps icon-tinted backdrops dark and readable. */
+    private fun shade(color: Int, value: Float): Int {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(color, hsv)
+        hsv[1] = minOf(hsv[1], 0.75f)
+        hsv[2] = value
+        return Color.HSVToColor(hsv)
+    }
+
     private fun tile(e: AppEntry, w: Int, h: Int): View {
         val pm = packageManager
         val wPx = (w * dp).toInt(); val hPx = (h * dp).toInt()
@@ -305,16 +328,24 @@ class MainActivity : Activity() {
             clipToOutline = true
             elevation = 4 * dp
         }
-        val banner = e.info.activityInfo.loadBanner(pm)
+        // Original artwork: the app's own TV banner (activity, then app level), else its real icon.
+        val banner = e.info.activityInfo.loadBanner(pm) ?: e.info.activityInfo.applicationInfo.loadBanner(pm)
         if (banner != null) {
             card.foreground = glassFg
             card.addView(ImageView(this).apply {
                 setImageDrawable(banner); scaleType = ImageView.ScaleType.CENTER_CROP
             }, FrameLayout.LayoutParams(-1, -1))
         } else {
-            val s = (hPx * 0.55f).toInt()
-            card.addView(ImageView(this).apply { setImageDrawable(e.info.loadIcon(pm)) },
-                FrameLayout.LayoutParams(s, s, Gravity.CENTER))
+            // No banner: show the original icon large, on a backdrop tinted from the icon's own colors.
+            val base = dominantColor(e.info.loadIcon(pm))
+            card.background = GradientDrawable(
+                GradientDrawable.Orientation.TL_BR, intArrayOf(shade(base, 0.62f), shade(base, 0.30f))
+            ).apply { cornerRadius = 20 * dp }
+            card.foreground = glassFg
+            val s = (hPx * 0.66f).toInt()
+            card.addView(ImageView(this).apply {
+                setImageDrawable(e.info.loadIcon(pm)); scaleType = ImageView.ScaleType.FIT_CENTER
+            }, FrameLayout.LayoutParams(s, s, Gravity.CENTER))
         }
 
         val label = TextView(this).apply {

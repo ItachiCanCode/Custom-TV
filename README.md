@@ -6,6 +6,7 @@ A custom **Android TV home launcher** with a frosted-glass look, animated backgr
 
 ## Features
 - Shows all installed Leanback and regular launcher apps in a wrapping A-Z grid, with names always visible
+- Every app keeps its **original artwork**: its own TV banner, or its real icon on a backdrop tinted from the icon's colors
 - **Favorites** row, plus a long-press menu on any app: pin/unpin, App info, Uninstall
 - Focus animations (scale and glass highlight) with smooth scrolling
 - Clock, date, and **Wi-Fi** and **Settings** shortcuts in the header
